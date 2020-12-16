@@ -1,0 +1,17 @@
+.App {
+  text-align: center;
+}
+
+.player {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.createteambtn {
+  position: fixed;
+  bottom: 10px;
+  left: 20px;
+}
