@@ -30,6 +30,8 @@ class Task(Model):
         Category, related_name='category_tasks', on_delete=models.CASCADE)
     task_name = models.CharField(max_length=200, null=False, blank=False)
     description = models.CharField(max_length=200, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.task_name

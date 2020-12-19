@@ -49,7 +49,8 @@ class GetUser(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        serializer = UserWithProfileSerializer(request.user)
+        serializer = UserWithProfileSerializer(
+            request.user, context={'request': request})
 
         return Response({
             'user': serializer.data
