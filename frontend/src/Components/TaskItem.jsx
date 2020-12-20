@@ -59,9 +59,9 @@ const TaskItem = ({ name, task, deleteTask }) => {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: 50, scale: 0.3 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.5 } }}
+        // initial={{ opacity: 0, y: 50, scale: 0.3 }}
+        // animate={{ opacity: 1, y: 0, scale: 1 }}
+        // exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.5 } }}
         ref={drag}
       >
         <Card className={classes.root}>
@@ -78,7 +78,7 @@ const TaskItem = ({ name, task, deleteTask }) => {
             }
             align="left"
             title={capitalizeString(task.task_name)}
-            subheader="September 14, 2016"
+            subheader={task.created_at.substring(0, 10)}
           />
 
           <CardContent align="left">
@@ -86,14 +86,6 @@ const TaskItem = ({ name, task, deleteTask }) => {
               {task.description}
             </Typography>
           </CardContent>
-          {/* <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites" onClick={toggleOpen}>
-              <BackspaceIcon />
-            </IconButton> */}
-          {/* <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton> */}
-          {/* </CardActions> */}
         </Card>
       </motion.div>
     </AnimatePresence>

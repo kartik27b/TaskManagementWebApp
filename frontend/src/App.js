@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "./store/user";
 import PublicRoute from "./Components/PublicRoute";
 import Loader from "./Components/Loader";
+import ChatPage from "./Pages/ChatPage";
 
 function App() {
   // const [loading, setLoading] = useState(true);
