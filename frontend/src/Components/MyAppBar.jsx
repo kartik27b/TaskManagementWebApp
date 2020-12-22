@@ -5,9 +5,10 @@ import {
   Button,
   IconButton,
   makeStyles,
-  Tab,
-  Tabs,
+  Menu,
+  MenuItem,
   Toolbar,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
 import AvatarGroup from "@material-ui/lab/AvatarGroup";
@@ -16,10 +17,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/user";
 import CreateCategory from "./CreateCategory";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
+import VideoCallIcon from "@material-ui/icons/VideoCall";
 import { toggleTheme } from "../store/theme";
 import AddIcon from "@material-ui/icons/Add";
-import { Link, NavLink } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 export const drawerWidth = 300;
 
@@ -49,6 +50,16 @@ const MyAppBar = () => {
     setCategoryOpen(false);
   };
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <motion.div
       initial={{
@@ -69,25 +80,49 @@ const MyAppBar = () => {
           <Typography variant="h6" noWrap>
             {team ? team.name : "No team"}
           </Typography>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            style={{ marginLeft: "10px" }}
-            onClick={handleCategoryOpen}
-          >
-            <AddIcon />
-          </IconButton>
+          <Tooltip title="Add Category" arrow>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              style={{ marginLeft: "10px" }}
+              onClick={handleCategoryOpen}
+            >
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
           <div className={classes.grow}></div>
-
-          <IconButton
-            color="inherit"
-            edge="start"
-            style={{ marginRight: "10px" }}
-            onClick={() => dispatch(toggleTheme())}
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
           >
-            <Brightness4Icon />
-          </IconButton>
+            <MenuItem onClick={handleClose}>Team Video Call</MenuItem>
+            <MenuItem onClick={handleClose}>Peer to Peer Call</MenuItem>
+          </Menu>
+          <Tooltip title="Video Call" arrow>
+            <IconButton
+              color="inherit"
+              edge="start"
+              style={{ marginRight: "10px" }}
+              onClick={handleClick}
+            >
+              <VideoCallIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Toggle Theme" arrow>
+            <IconButton
+              color="inherit"
+              edge="start"
+              style={{ marginRight: "10px" }}
+              onClick={() => dispatch(toggleTheme())}
+            >
+              <Brightness4Icon />
+            </IconButton>
+          </Tooltip>
+
           <AvatarGroup max={3}>
             {team
               ? team.users.map((user) => {
@@ -120,7 +155,6 @@ const MyAppBar = () => {
         ></CreateCategory>
       </AppBar>
     </motion.div>
-    // </AnimatePresence>
   );
 };
 

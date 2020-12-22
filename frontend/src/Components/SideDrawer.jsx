@@ -26,7 +26,7 @@ import { motion } from "framer-motion";
 import { drawerWidth } from "./MyAppBar";
 import { StyledBadge } from "./StyledBadge";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
@@ -34,8 +34,18 @@ const useStyles = makeStyles(() => ({
   drawerPaper: {
     width: drawerWidth,
   },
+  button: {
+    marginTop: theme.spacing(2),
+  },
   // toolbar: theme.mixins.toolbar,
 }));
+
+export const SideVariants = {
+  initial: {
+    opacity: 0,
+  },
+  animate: { x: 0, opacity: 1, transition: { duration: 0.3 } },
+};
 
 const SideDrawer = () => {
   const classes = useStyles();
@@ -52,6 +62,19 @@ const SideDrawer = () => {
   const handleClose = () => {
     setDialogOpen(false);
   };
+
+  const data = [
+    {
+      id: 1,
+      path: "/person1",
+      name: "kartik",
+    },
+    {
+      id: 2,
+      path: "/person2",
+      name: "kartik2",
+    },
+  ];
 
   return (
     <Drawer
@@ -98,7 +121,6 @@ const SideDrawer = () => {
       <Tabs
         value={currentTab}
         onChange={(e, value) => {
-          console.log(value);
           dispatch(changeTab(value));
         }}
         aria-label="simple tabs example"
@@ -110,13 +132,27 @@ const SideDrawer = () => {
 
       <TabPanel value={currentTab} index={"tasks"}>
         <motion.div
+          variants={SideVariants}
           initial={{
             x: 100,
-            opacity: 0,
+            ...SideVariants.initial,
           }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          animate="animate"
         >
+          <div className="createteambtn">
+            <List>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                fullWidth
+                className={classes.button}
+                onClick={handleClickOpen}
+              >
+                Create Team
+              </Button>
+            </List>
+          </div>
           <List>
             {teams
               ? teams.map((val) => {
@@ -151,44 +187,32 @@ const SideDrawer = () => {
               : null}
           </List>
         </motion.div>
-        <div className="createteambtn">
-          <List>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              className={classes.button}
-              onClick={handleClickOpen}
-            >
-              Create Team
-            </Button>
-          </List>
-        </div>
       </TabPanel>
 
       <TabPanel value={currentTab} index={"chat"}>
         <motion.div
+          variants={SideVariants}
           initial={{
             x: -100,
-            opacity: 0,
+            ...SideVariants.initial,
           }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          animate="animate"
         >
+          {/* <BottomAppBar /> */}
           <List>
             <ListItem>
               <TextField label={"Search Chats"} variant="outlined" fullWidth />
             </ListItem>
           </List>
           <List>
-            {teams
-              ? teams.map((val) => {
+            {data
+              ? data.map((val) => {
                   return (
                     <ListItem
                       button
                       key={val.id}
                       onClick={() => {
-                        dispatch(changeTeam(val.id));
+                        return;
                       }}
                     >
                       <ListItemIcon>
@@ -211,7 +235,6 @@ const SideDrawer = () => {
           </List>
         </motion.div>
       </TabPanel>
-
       <Divider />
 
       <CreateTeam open={dialogOpen} handleClose={handleClose}></CreateTeam>

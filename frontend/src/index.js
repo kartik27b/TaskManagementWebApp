@@ -20,8 +20,8 @@ const lightTheme = {
   palette: {
     type: "light",
     primary: blue,
-    simple: {
-      main: "white",
+    secondary: {
+      main: "#bbe1fa",
     },
   },
   ...extraConfig,
@@ -30,6 +30,13 @@ const lightTheme = {
 const darkTheme = {
   palette: {
     type: "dark",
+    // primary: {
+    //   main: "#0f4c75",
+    // },
+    primary: blue,
+    secondary: {
+      main: "#bbe1fa",
+    },
   },
   ...extraConfig,
 };

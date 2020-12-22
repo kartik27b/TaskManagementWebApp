@@ -10,8 +10,6 @@ const authSlice = createSlice({
     token: null,
     isAuthenticated: false,
     loading: false,
-    socketConnected: false,
-    socket: undefined,
   },
   reducers: {
     loadingStart(state, action) {
@@ -33,14 +31,6 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
       localStorage.removeItem("token");
-    },
-    socketConnected(state, action) {
-      state.socket = action.payload;
-      state.socketConnected = true;
-    },
-    socketDisconnect(state) {
-      state.socketConnected = false;
-      state.socket = undefined;
     },
   },
 });
@@ -81,6 +71,4 @@ export const {
   logout,
   loadingStart,
   loadingStop,
-  socketConnected,
-  socketDisconnect,
 } = authSlice.actions;

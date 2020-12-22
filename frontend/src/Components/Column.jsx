@@ -7,7 +7,7 @@ import { useDrop } from "react-dnd";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: "white",
+    // backgroundColor: "white",
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     borderRadius: theme.spacing(1),
@@ -56,7 +56,7 @@ const Column = ({ children, id, title, teamId }) => {
         >
           <Typography
             variant="h6"
-            style={{ color: isOver ? "white" : "black" }}
+            // style={{ color: isOver ? "white" : "black" }}
           >
             {title}
           </Typography>

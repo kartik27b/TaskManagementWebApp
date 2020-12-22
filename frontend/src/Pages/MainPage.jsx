@@ -6,17 +6,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import Loader from "../Components/Loader";
 import { deleteTaskState } from "../store/data";
 
-import {
-  Avatar,
-  Card,
-  CardContent,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  TextField,
-} from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Column from "../Components/Column";
 import TaskItem from "../Components/TaskItem";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,8 +14,9 @@ import { api } from "../extras/api";
 import SideDrawer from "../Components/SideDrawer";
 import MyAppBar, { drawerWidth } from "../Components/MyAppBar";
 import TabPanel from "../Components/TabPanel";
-import { socketConnected, socketDisconnect } from "../store/user";
-import { AnimatePresence, motion } from "framer-motion";
+import { socketConnected, socketDisconnect } from "../store/chat";
+import { motion } from "framer-motion";
+import ChatPage from "./ChatContent";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -55,6 +46,13 @@ const useStyles = makeStyles((theme) => ({
     display: "inline",
   },
 }));
+
+export const mainVariants = {
+  initial: {
+    opacity: 0,
+  },
+  animate: { opacity: 1, transition: { duration: 0.5 } },
+};
 
 export default function MainPage() {
   const classes = useStyles();
@@ -131,11 +129,10 @@ export default function MainPage() {
             <main className={classes.content}>
               <div className={classes.toolbar} />
               <motion.div
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                variants={mainVariants}
+                initial="initial"
+                animate="animate"
+                transition="transition"
               >
                 <Grid container spacing={2}>
                   <DndProvider backend={HTML5Backend}>
@@ -161,53 +158,17 @@ export default function MainPage() {
           </TabPanel>
 
           <TabPanel value={currentTab} index={"chat"}>
-            <main className={classes.content}>
-              {/* <div className={classes.toolbar} /> */}
-              <motion.div
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <List>
-                  <ChatMessage />
-                  <ChatMessage own />
-                  <ChatMessage />
-                </List>
-                <Card className={classes.cardBottom}>
-                  <CardContent>
-                    <form
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                      }}
-                    >
-                      <TextField
-                        label={"Message"}
-                        variant="outlined"
-                        fullWidth
-                      />
-                    </form>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </main>
+            <motion.div
+              variants={mainVariants}
+              initial="initial"
+              animate="animate"
+              transition="transition"
+            >
+              <ChatPage />
+            </motion.div>
           </TabPanel>
         </React.Fragment>
       )}
     </div>
   );
 }
-
-const ChatMessage = ({ own }) => {
-  return (
-    <ListItem alignItems="center">
-      {!own && (
-        <ListItemAvatar>
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-        </ListItemAvatar>
-      )}
-      <ListItemText primary="Brunch this weekend?" />
-    </ListItem>
-  );
-};
