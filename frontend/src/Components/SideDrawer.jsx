@@ -25,6 +25,8 @@ import TabPanel from "./TabPanel";
 import { motion } from "framer-motion";
 import { drawerWidth } from "./MyAppBar";
 import { StyledBadge } from "./StyledBadge";
+import { changeActiveThread } from "../store/chat";
+import { capitalizeString } from "./TaskItem";
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -75,6 +77,10 @@ const SideDrawer = () => {
       name: "kartik2",
     },
   ];
+
+  const chat = useSelector((state) => state.chat);
+  const threads = chat.threads;
+  const user = useSelector((state) => state.auth.user);
 
   return (
     <Drawer
@@ -134,10 +140,13 @@ const SideDrawer = () => {
         <motion.div
           variants={SideVariants}
           initial={{
-            x: 100,
+            // x: 100,
             ...SideVariants.initial,
           }}
           animate="animate"
+          style={{
+            overflow: "hidden",
+          }}
         >
           <div className="createteambtn">
             <List>
@@ -193,10 +202,13 @@ const SideDrawer = () => {
         <motion.div
           variants={SideVariants}
           initial={{
-            x: -100,
+            // x: -100,
             ...SideVariants.initial,
           }}
           animate="animate"
+          style={{
+            overflow: "hidden",
+          }}
         >
           {/* <BottomAppBar /> */}
           <List>
@@ -205,14 +217,20 @@ const SideDrawer = () => {
             </ListItem>
           </List>
           <List>
-            {data
-              ? data.map((val) => {
+            {threads
+              ? threads.map((thread) => {
+                  const { id, users } = thread;
+
+                  const chattingWith = users.filter(
+                    (curr) => curr.id !== user.id
+                  )[0];
+
                   return (
                     <ListItem
                       button
-                      key={val.id}
+                      key={id}
                       onClick={() => {
-                        return;
+                        dispatch(changeActiveThread(thread));
                       }}
                     >
                       <ListItemIcon>
@@ -224,10 +242,19 @@ const SideDrawer = () => {
                           }}
                           variant="dot"
                         >
-                          <Avatar key={val.id} alt={val.name} src="/t" />
+                          <Avatar
+                            alt={"ke"}
+                            src={
+                              chattingWith.profile
+                                ? chattingWith.profile.image
+                                : null
+                            }
+                          />
                         </StyledBadge>
                       </ListItemIcon>
-                      <ListItemText primary={val.name} />
+                      <ListItemText
+                        primary={capitalizeString(chattingWith.username)}
+                      />
                     </ListItem>
                   );
                 })

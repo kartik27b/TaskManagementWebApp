@@ -1,4 +1,5 @@
 import { api } from "../extras/api";
+import { changeActiveThread, setThreads } from "./chat";
 
 // eslint-disable-next-line no-unused-vars
 const { createSlice, current } = require("@reduxjs/toolkit");
@@ -162,11 +163,17 @@ export const getEverything = () => async (dispatch) => {
 
     const res = await api.get("/listall/");
     const users = await api.get("/auth/signup/");
+    const threads = await api.get("/chat/threads/");
 
     dispatch(setData({ teams: res.data, users: users.data }));
+    dispatch(setThreads(threads.data));
     if (res.data.length !== 0) {
       dispatch(changeTeam(res.data[0].id));
     }
+    if (threads.data.length !== 0) {
+      dispatch(changeActiveThread(threads.data[0]));
+    }
+
     dispatch(dataLoadingEnd());
   } catch (e) {
     console.log(e);

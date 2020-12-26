@@ -14,9 +14,10 @@ import { api } from "../extras/api";
 import SideDrawer from "../Components/SideDrawer";
 import MyAppBar, { drawerWidth } from "../Components/MyAppBar";
 import TabPanel from "../Components/TabPanel";
-import { socketConnected, socketDisconnect } from "../store/chat";
+import { addMessage, socketConnected, socketDisconnect } from "../store/chat";
 import { motion } from "framer-motion";
 import ChatPage from "./ChatContent";
+import WebSocketInstance from "../store/websocket";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -91,25 +92,39 @@ export default function MainPage() {
       });
   };
 
+  function waitForSocketConnection(callback) {
+    setTimeout(function () {
+      if (WebSocketInstance.state() === 1) {
+        console.log("Connection is made");
+        callback();
+        return;
+      } else {
+        console.log("wait for connection...");
+        waitForSocketConnection(callback);
+      }
+    }, 100);
+  }
+
+  function initialiseChat() {
+    waitForSocketConnection(() => {
+      // WebSocketInstance.fetchMessages(
+      //   this.props.username,
+      //   this.props.match.params.chatID
+      // );
+      console.log("Should do something here");
+    });
+    WebSocketInstance.connect();
+  }
+
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8000/ws");
-    ws.onopen = () => {
-      console.log("connected");
-      dispatch(socketConnected(ws));
-    };
-
-    ws.onmessage = (e) => {
-      console.log(e);
-    };
-
-    ws.onclose = () => {
-      console.log("Disconnected");
-      dispatch(socketDisconnect());
-    };
-
-    return () => {
-      ws.close();
-    };
+    initialiseChat();
+    WebSocketInstance.addCallbacks(
+      () => {},
+      (msg) => {
+        console.log(msg, " received");
+        dispatch(addMessage({ message: msg, id: Math.random() }));
+      }
+    );
   }, []);
 
   return (
@@ -122,10 +137,7 @@ export default function MainPage() {
           <SideDrawer></SideDrawer>
 
           <TabPanel value={currentTab} index={"tasks"}>
-            {/* <div>Item One tasks</div> */}
-
             <MyAppBar></MyAppBar>
-
             <main className={classes.content}>
               <div className={classes.toolbar} />
               <motion.div

@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const capitalizeString = (string) => {
+export const capitalizeString = (string) => {
   const words = string.toLowerCase().split(" ");
 
   for (let i = 0; i < words.length; i++) {
