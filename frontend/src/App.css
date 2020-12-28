@@ -1,15 +1,6 @@
 .App {
   text-align: center;
 }
-.App::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.App {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
 
 .player {
   width: 100vw;

@@ -7,6 +7,7 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import store from "./store";
 import { Provider, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const extraConfig = {
   typography: {
@@ -44,6 +45,10 @@ const darkTheme = {
 const AppWithTheme = ({ children }) => {
   const theme = useSelector((state) => state.theme.lightTheme);
   const appliedTheme = createMuiTheme(theme ? lightTheme : darkTheme);
+
+  useEffect(() => {
+    console.log(theme);
+  }, []);
 
   return <ThemeProvider theme={appliedTheme}>{children}</ThemeProvider>;
 };

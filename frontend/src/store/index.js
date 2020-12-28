@@ -5,6 +5,7 @@ import data from "./data";
 import theme from "./theme";
 import tabs from "./tabs";
 import chat from "./chat";
+import notifier from "./notifier";
 
 const reducer = combineReducers({
   auth,
@@ -12,6 +13,7 @@ const reducer = combineReducers({
   theme,
   tabs,
   chat,
+  notifier,
 });
 
 const store = configureStore({

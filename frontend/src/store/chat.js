@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import { api } from "../extras/api";
+import { showNotification } from "./notifier";
 
 const chatSlice = createSlice({
   name: "chat",
   initialState: {
     socketConnected: false,
-    socket: undefined,
     threads: [],
     activeThread: undefined,
   },
@@ -25,13 +25,35 @@ const chatSlice = createSlice({
       state.activeThread = action.payload;
     },
     addMessage(state, action) {
-      state.activeThread.messages.push(action.payload);
-      state.threads
-        .find((thread) => thread.id === state.activeThread.id)
-        .messages.push(action.payload);
+      const message = action.payload;
+      const thread_id = message.thread;
+
+      if (thread_id === state.activeThread.id) {
+        state.activeThread.messages.push(message);
+        state.threads
+          .find((thread) => thread.id === state.activeThread.id)
+          .messages.push(action.payload);
+      } else {
+        state.threads
+          .find((thread) => thread.id === thread_id)
+          .messages.push(action.payload);
+      }
     },
   },
 });
+
+export const addMessageWithNotification = (msg, notification) => (
+  dispatch,
+  getState
+) => {
+  const { tabs } = getState();
+
+  if (tabs.tabVal === "tasks") {
+    dispatch(showNotification("Message received"));
+  }
+
+  dispatch(addMessage({ ...msg }));
+};
 
 export const {
   socketConnected,

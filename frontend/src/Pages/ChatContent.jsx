@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
@@ -11,10 +11,9 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Avatar from "@material-ui/core/Avatar";
 import { Card, CardContent, TextField } from "@material-ui/core";
 import { drawerWidth } from "../Components/MyAppBar";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { capitalizeString } from "../Components/TaskItem";
 import WebSocketInstance from "../store/websocket";
-import { addMessage } from "../store/chat";
 
 const useStyles = makeStyles((theme) => ({
   text: {
@@ -61,7 +60,6 @@ export default function ChatContent() {
   const user = useSelector((state) => state.auth.user);
   const thread = chat.activeThread;
   const messages = thread.messages;
-
   const chattingWith = thread.users.filter((curr) => curr.id !== user.id)[0];
 
   return (
@@ -72,10 +70,7 @@ export default function ChatContent() {
           Chat with {capitalizeString(chattingWith.username)}
         </Typography>
         <List className={classes.list}>
-          {messages.map(({ id }) => {
-            const primary = "helli";
-            const secondary = "hello";
-
+          {messages.map(({ id, content }) => {
             return (
               <React.Fragment key={id}>
                 {id === 1 && (
@@ -92,7 +87,7 @@ export default function ChatContent() {
                   <ListItemAvatar>
                     <Avatar alt="Profile Picture" />
                   </ListItemAvatar>
-                  <ListItemText primary={primary} secondary={secondary} />
+                  <ListItemText primary={content} />
                 </ListItem>
               </React.Fragment>
             );
@@ -105,7 +100,7 @@ export default function ChatContent() {
                 event.preventDefault();
                 if (message.length !== 0) {
                   const messageObject = {
-                    id: Math.random(),
+                    thread_id: thread.id,
                     content: message,
                   };
                   WebSocketInstance.newChatMessage(messageObject);
@@ -113,13 +108,15 @@ export default function ChatContent() {
                 }
               }}
             >
-              <TextField
-                label={"Message"}
-                variant="outlined"
-                fullWidth
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
+              {chat.socketConnected && (
+                <TextField
+                  label={"Message"}
+                  variant="outlined"
+                  fullWidth
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+              )}
             </form>
           </CardContent>
         </Card>

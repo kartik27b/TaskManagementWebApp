@@ -1,29 +1,38 @@
-from channels.auth import AuthMiddlewareStack
-from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import AnonymousUser
+from channels.db import database_sync_to_async
+from rest_framework.authtoken.models import Token
+from channels.middleware import BaseMiddleware
 
 
-class TokenAuthMiddleware:
-    """
-    Token authorization middleware for Django Channels 2
-    """
+@database_sync_to_async
+def get_user(token_key):
+    try:
+        token = Token.objects.get(key=token_key)
+        return token.user
+    except Token.DoesNotExist:
+        return AnonymousUser()
+
+
+class TokenAuthMiddleware(BaseMiddleware):
 
     def __init__(self, inner):
         self.inner = inner
 
-    def __call__(self, scope):
-        headers = dict(scope['headers'])
-        if b'authorization' in headers:
-            try:
-                token_name, token_key = headers[b'authorization'].decode(
-                ).split()
-                if token_name == 'Token':
-                    token = Token.objects.get(key=token_key)
-                    scope['user'] = token.user
-            except Token.DoesNotExist:
-                scope['user'] = AnonymousUser()
-        return self.inner(scope)
+    async def __call__(self, scope, receive, send):
+        # query = dict((x.split('=')
+        #   for x in scope['query_string'].decode().split("&")))
+        arr = scope['query_string'].decode().split('&')
+        query = {}
+        try:
+            for x in arr:
+                val = x.split('=')
+                query[val[0]] = val[1]
+        except:
+            pass
 
+        print(query)
 
-def TokenAuthMiddlewareStack(inner): return TokenAuthMiddleware(
-    AuthMiddlewareStack(inner))
+        token_key = query.get('token')
+
+        scope['user'] = await get_user(token_key)
+        return await super().__call__(scope, receive, send)

@@ -14,10 +14,11 @@ import { api } from "../extras/api";
 import SideDrawer from "../Components/SideDrawer";
 import MyAppBar, { drawerWidth } from "../Components/MyAppBar";
 import TabPanel from "../Components/TabPanel";
-import { addMessage, socketConnected, socketDisconnect } from "../store/chat";
+import { addMessageWithNotification, socketConnected } from "../store/chat";
 import { motion } from "framer-motion";
 import ChatPage from "./ChatContent";
 import WebSocketInstance from "../store/websocket";
+import Notification from "../Components/Notification";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -111,9 +112,11 @@ export default function MainPage() {
       //   this.props.username,
       //   this.props.match.params.chatID
       // );
+
       console.log("Should do something here");
     });
-    WebSocketInstance.connect();
+    WebSocketInstance.connect(state.auth.token);
+    dispatch(socketConnected());
   }
 
   useEffect(() => {
@@ -122,7 +125,13 @@ export default function MainPage() {
       () => {},
       (msg) => {
         console.log(msg, " received");
-        dispatch(addMessage({ message: msg, id: Math.random() }));
+        // if (currentTab === "tasks") {
+        //   console.log(currentTab);
+        //   // dispatch(showNotification("Message Received"));
+        //   console.log("this dispatch is called");
+        // }
+        // dispatch(addMessage({ ...msg }));
+        dispatch(addMessageWithNotification({ ...msg }, "Helo world"));
       }
     );
   }, []);
@@ -131,13 +140,13 @@ export default function MainPage() {
     <div className={classes.root}>
       <CssBaseline />
       {isDataLoading ? (
-        <Loader></Loader>
+        <Loader />
       ) : (
         <React.Fragment>
-          <SideDrawer></SideDrawer>
+          <SideDrawer />
 
           <TabPanel value={currentTab} index={"tasks"}>
-            <MyAppBar></MyAppBar>
+            <MyAppBar />
             <main className={classes.content}>
               <div className={classes.toolbar} />
               <motion.div
@@ -148,24 +157,24 @@ export default function MainPage() {
               >
                 <Grid container spacing={2}>
                   <DndProvider backend={HTML5Backend}>
-                    {team
-                      ? team.team_categories.map((val) => {
-                          const id = val.id;
-                          return (
-                            <Column
-                              key={id}
-                              id={id}
-                              title={val.name}
-                              teamId={team.id}
-                            >
-                              {getTasksForCategory(id)}
-                            </Column>
-                          );
-                        })
-                      : null}
+                    {team &&
+                      team.team_categories.map((val) => {
+                        const id = val.id;
+                        return (
+                          <Column
+                            key={id}
+                            id={id}
+                            title={val.name}
+                            teamId={team.id}
+                          >
+                            {getTasksForCategory(id)}
+                          </Column>
+                        );
+                      })}
                   </DndProvider>
                 </Grid>
               </motion.div>
+              <Notification />
             </main>
           </TabPanel>
 

@@ -15,10 +15,11 @@ class WebSocketService {
     this.socketRef = null;
   }
 
-  connect(chatUrl) {
+  connect(token) {
     // "ws://" + window.location.host + "/ws/chat/" + roomName + "/";
     // const path = `${SOCKET_URL}/ws/chat/${chatUrl}/`;
-    const path = "ws://localhost:8000/ws/chat/kb/";
+    const path = `ws://localhost:8000/ws/chat/kb/?token=${token}`;
+    console.log(token, " is token ");
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
       console.log("WebSocket open");
@@ -31,7 +32,7 @@ class WebSocketService {
     };
     this.socketRef.onclose = () => {
       console.log("WebSocket closed let's reopen");
-      this.connect();
+      this.connect(token);
     };
   }
 
@@ -49,7 +50,7 @@ class WebSocketService {
       this.callbacks[command](parsedData.messages);
     }
     if (command === "new_message") {
-      this.callbacks[command](parsedData.message);
+      this.callbacks[command](parsedData);
     }
   }
 
@@ -65,6 +66,7 @@ class WebSocketService {
     this.sendMessage({
       command: "new_message",
       message: message.content,
+      thread_id: message.thread_id,
     });
   }
 

@@ -32,11 +32,7 @@ function App() {
         {!loading ? (
           <Switch>
             <PrivateRoute exact path="/" component={MainPage}></PrivateRoute>
-            <PublicRoute
-              exact
-              path="/login"
-              component={LoginPage}
-            ></PublicRoute>
+            <Route exact path="/login" component={LoginPage}></Route>>
             <Route exact path="/signup" component={SignupPage}></Route>
           </Switch>
         ) : (

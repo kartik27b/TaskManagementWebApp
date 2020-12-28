@@ -1,4 +1,10 @@
-import { Box, Button, Container, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Container,
+  CssBaseline,
+  Typography,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Field from "../Components/Field";
 import { useForm } from "react-hook-form";
@@ -33,6 +39,7 @@ function SignupPage() {
 
   return (
     <Container maxWidth="sm">
+      <CssBaseline />
       <Box mt={12}>
         <Box mb={3}>
           <Typography variant="h4" component="h2" color="textSecondary">
